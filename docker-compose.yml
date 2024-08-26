@@ -1,0 +1,37 @@
+version: '3.9'
+services:
+  haproxy:
+    image: haproxy:3.0-alpine
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    depends_on:
+      - db
+  simple_server:
+    image: python:3.12-slim
+    volumes:
+      - ./server:/opt/simple_server
+    command: ["bash", "-c", "python3 -m pip install -r /opt/simple_server/requirements.txt &&
+                             python3 /opt/simple_server/server.py"]
+    depends_on:
+      - db
+      - haproxy
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: secret_pass
+  client_cheker:
+    image: postgres:16-alpine
+    volumes:
+      - ./commands.sh:/tmp/commands.sh
+    command: ["bash", "-c" , "sleep 10 && apk --no-cache add curl &&
+                              bash /tmp/commands.sh"]
+    environment:
+      - PGPASSWORD=secret_pass
+    depends_on:
+      - haproxy
+      - db
+      - simple_server
+                  
+
+  
+  
