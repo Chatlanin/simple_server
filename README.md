@@ -1,4 +1,4 @@
-Simple python server + postgreSQL + haproxy  
+Simple python server + PostgreSQL + HAProxy  
 
 запуск приложения - **docker compose up**  
 
