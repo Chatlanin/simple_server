@@ -8,7 +8,7 @@ def db_connect(db_name="postgres"):
             user="postgres",
             database=db_name,
             password="secret_pass",
-            host="haproxy",
+            host="db",
             port=5432,
         )
     except psycopg2.OperationalError:

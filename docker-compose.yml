@@ -12,8 +12,6 @@ services:
   simple_server:
     build: ./server
     depends_on:
-      haproxy:
-        condition: service_started
       db:
         condition: service_healthy
     networks:
