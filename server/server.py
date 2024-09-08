@@ -9,7 +9,7 @@ conn = psycopg2.connect(
     user="postgres",
     database="pbx_refactor",
     password="secret_pass",
-    host="haproxy",
+    host="db",
     port=5432,
 )
 conn.autocommit = True
