@@ -1,21 +1,30 @@
-import socketserver
+from fastapi import FastAPI
 import psycopg2
+import database as db
+import uvicorn
 
-HOST, PORT = "0.0.0.0", 1234
 
+app = FastAPI()
 conn = psycopg2.connect(
-    user="postgres", password="secret_pass", host="haproxy", port=5000
+    user="postgres",
+    database="pbx_refactor",
+    password="secret_pass",
+    host="haproxy",
+    port=5432,
 )
 conn.autocommit = True
 
 
-class TCPHandler(socketserver.BaseRequestHandler):
-    def handle(self):
-        with conn.cursor() as cursor:
-            cursor.execute("create database pbx_refactor")
-        conn.close()
-        print("Создали базу")
+@app.get("/get_data")
+def get_data():
+    return db.get_data(conn)
 
 
-with socketserver.TCPServer((HOST, PORT), TCPHandler) as socket:
-    socket.handle_request()
+@app.get("/put_data")
+def put_data():
+    response = db.put_data(conn)
+    return response
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=1234)
