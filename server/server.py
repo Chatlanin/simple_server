@@ -5,24 +5,33 @@ import uvicorn
 
 
 app = FastAPI()
-conn = psycopg2.connect(
-    user="postgres",
-    database="pbx_refactor",
-    password="secret_pass",
-    host="haproxy",
-    port=5432,
-)
-conn.autocommit = True
+
+
+def get_connect():
+    conn = psycopg2.connect(
+        user="postgres",
+        database="pbx_refactor",
+        password="secret_pass",
+        host="haproxy",
+        port=5432,
+    )
+    conn.autocommit = True
+    return conn
 
 
 @app.get("/get_data")
 def get_data():
-    return db.get_data(conn)
+    conn = get_connect()
+    response = db.get_data(conn)
+    conn.close()
+    return response
 
 
 @app.get("/put_data")
 def put_data():
+    conn = get_connect()
     response = db.put_data(conn)
+    conn.close()
     return response
 
 

@@ -14,6 +14,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      haproxy:
+        condition: service_started
     networks:
       - mynet
   db:
